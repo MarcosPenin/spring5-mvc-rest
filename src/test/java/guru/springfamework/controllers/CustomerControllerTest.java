@@ -93,15 +93,10 @@ public class CustomerControllerTest {
         customer.setFirstname("Fred");
         customer.setLastname("Flintstone");
 
-        Customer returnDTO = new Customer();
-        returnDTO.setFirstname(customer.getFirstname());
-        returnDTO.setLastname(customer.getLastname());
-
-
-        when(customerService.createNewCustomer(customer)).thenReturn(returnDTO);
+        when(customerService.createNewCustomer(any(Customer.class))).thenReturn(customer);
 
         //when/then
-        mockMvc.perform(post("/api/v1/customers/")
+        mockMvc.perform(post("/api/v1/customers/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(customer)))
                 .andExpect(status().isCreated())

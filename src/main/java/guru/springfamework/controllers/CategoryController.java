@@ -7,12 +7,10 @@ import guru.springfamework.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/categories/")
 public class CategoryController {
 
@@ -23,15 +21,14 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<CategoryList> getallCatetories(){
-
-        return new ResponseEntity<CategoryList>(
-                new CategoryList(categoryService.getAllCategories()), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryList getallCatetories() {
+        return new CategoryList(categoryService.getAllCategories());
     }
 
     @GetMapping("{name}")
-    public ResponseEntity<Category> getCategoryByName(@PathVariable String name){
-        return new ResponseEntity<Category>(
-                categoryService.getCategoryByName(name), HttpStatus.OK
-        );
-    }}
+    @ResponseStatus(HttpStatus.OK)
+    public Category getCategoryByName(@PathVariable String name) {
+        return categoryService.getCategoryByName(name);
+    }
+}
