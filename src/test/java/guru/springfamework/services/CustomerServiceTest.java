@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,4 +56,27 @@ public class CustomerServiceTest {
 
         assertEquals("Michale", customerDTO.getFirstname());
     }
+    @Test
+    public void createNewCustomer() throws Exception {
+
+        //given
+        Customer customer = new Customer();
+        customer.setFirstname("Jim");
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setFirstname(customer.getFirstname());
+        savedCustomer.setLastname(customer.getLastname());
+        savedCustomer.setId(1l);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        Customer returnCustomer = customerService.createNewCustomer(customer);
+
+        //then
+        assertEquals(customer.getFirstname(), returnCustomer.getFirstname());
+
+    }
+
+
 }

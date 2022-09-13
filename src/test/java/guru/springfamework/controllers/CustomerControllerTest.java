@@ -1,5 +1,6 @@
 package guru.springfamework.controllers;
 
+
 import guru.springfamework.domain.Customer;
 import guru.springfamework.services.CustomerService;
 import org.junit.Before;
@@ -9,19 +10,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static guru.springfamework.controllers.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,4 +81,51 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo("Michale")));
     }
+
+    @Test
+    public void createNewCustomer() throws Exception {
+        //given
+        Customer customer = new Customer();
+        customer.setFirstname("Fred");
+        customer.setLastname("Flintstone");
+
+        Customer returnDTO = new Customer();
+        returnDTO.setFirstname(customer.getFirstname());
+        returnDTO.setLastname(customer.getLastname());
+
+
+        when(customerService.createNewCustomer(customer)).thenReturn(returnDTO);
+
+        //when/then
+        mockMvc.perform(post("/api/v1/customers/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(customer)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstname", equalTo("Fred")));
+    }
+
+    @Test
+    public void testUpdateCustomer() throws Exception {
+        //given
+        Customer customer = new Customer();
+        customer.setFirstname("Fred");
+        customer.setLastname("Flintstone");
+
+        Customer returnCostumer = new Customer();
+        returnCostumer.setFirstname(customer.getFirstname());
+        returnCostumer.setLastname(customer.getLastname());
+
+        when(customerService.saveCustomer(anyLong(), any(Customer.class))).thenReturn(returnCostumer);
+
+        //when/then
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo("Fred")))
+                .andExpect(jsonPath("$.lastname", equalTo("Flintstone")));
+    }
+
+
+
 }

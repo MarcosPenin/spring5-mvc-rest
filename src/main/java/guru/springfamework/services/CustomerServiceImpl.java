@@ -28,4 +28,17 @@ public class CustomerServiceImpl implements CustomerService{
         return customerRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
     }
+
+    @Override
+    public Customer createNewCustomer(Customer customer) {
+
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer saveCustomer(Long id, Customer customer) {
+        return customerRepository.save(customer);
+
+
+    }
 }
