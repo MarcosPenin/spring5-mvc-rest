@@ -38,7 +38,31 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public Customer saveCustomer(Long id, Customer customer) {
         return customerRepository.save(customer);
-
-
     }
+    @Override
+    public Customer patchCustomer(Long id, Customer entryCustomer) {
+
+        return customerRepository.findById(id).map(customer -> {
+
+            if(entryCustomer.getFirstname() != null){
+                customer.setFirstname(entryCustomer.getFirstname());
+            }
+
+            if(entryCustomer.getLastname() != null){
+                customer.setLastname(entryCustomer.getLastname());
+            }
+
+            Customer returnDto = customerRepository.save(customer);
+
+
+            return returnDto;
+
+        }).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
+    }
+
 }
